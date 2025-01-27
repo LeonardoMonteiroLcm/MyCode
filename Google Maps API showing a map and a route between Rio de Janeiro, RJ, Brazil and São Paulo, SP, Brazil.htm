@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa e Rota - Rio de Janeiro a São Paulo</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsKSZ9FZ5KBCWMvJJkzuGrUyZx3xyHL7w"></script>
+    <style>
+        #map
+        {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function initMap()
+        {
+            // Cria o mapa centrado no Brasil
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -22.9068, lng: -43.1729 }, // Rio de Janeiro como ponto de referência
+                zoom: 6,
+                });
+
+            // Define o serviço de rotas
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer();
+
+            directionsRenderer.setMap(map);
+
+            // Configura a rota entre Rio de Janeiro e São Paulo
+            const request = {
+                origin: "Rio de Janeiro, RJ, Brasil",
+                destination: "São Paulo, SP, Brasil",
+                travelMode: google.maps.TravelMode.DRIVING,
+                };
+
+            // Calcula e exibe a rota
+            directionsService.route(request, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK)
+                {
+                    directionsRenderer.setDirections(result);
+                }
+                else
+                {
+                    console.error("Falha ao calcular a rota: " + status);
+                }
+            });
+        }
+
+        // Inicializa o mapa quando a página é carregada
+        window.onload = initMap;
+    </script>
+</body>
+</html>
