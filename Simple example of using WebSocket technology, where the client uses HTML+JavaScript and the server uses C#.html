@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Cliente</title>
+</head>
+<body>
+    <h2>Cliente WebSocket</h2>
+    <input type="text" id="message" placeholder="Digite uma mensagem">
+    <button onclick="sendMessage()">Enviar</button>
+    <ul id="messages"></ul>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:5000/ws");
+
+        socket.onopen = () => {
+            console.log("Conexão WebSocket estabelecida!");
+        };
+
+        socket.onmessage = (event) => {
+            console.log("Mensagem recebida: " + event.data);
+            const li = document.createElement("li");
+            li.textContent = event.data;
+            document.getElementById("messages").appendChild(li);
+        };
+
+        socket.onclose = () => {
+            console.log("Conexão WebSocket fechada.");
+        };
+
+        function sendMessage() {
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value;
+            socket.send(message);
+            messageInput.value = "";
+        }
+    </script>
+</body>
+</html>
