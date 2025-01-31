@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps API - Plotando Endereços</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsKSZ9FZ5KBCWMvJJkzuGrUyZx3xyHL7w&callback=initMap" async defer></script>
+    <script>
+        let map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 39.8283, lng: -98.5795 }, // Centro aproximado dos EUA
+                zoom: 4,
+            });
+            fetch("list_of_real_usa_addresses.json")
+                .then(response => response.json())
+                .then(addresses => {
+                    const geocoder = new google.maps.Geocoder();
+                    addresses.forEach(addressData => {
+                        const fullAddress = `${addressData.address}, ${addressData.city}, ${addressData.state} ${addressData.zip}, USA`;
+                        geocoder.geocode({ address: fullAddress }, (results, status) => {
+                            if (status === "OK" && results[0])
+                            {
+                                new google.maps.Marker({
+                                    position: results[0].geometry.location,
+                                    map: map,
+                                    title: fullAddress,
+                                });
+                            }
+                            else
+                            {
+                                console.error("Geocode falhou para: ", fullAddress, " devido a: ", status);
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.error("Erro ao carregar o JSON: ", error));
+        }
+    </script>
+    <style>
+        #map
+        {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+</body>
+</html>
